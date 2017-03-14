@@ -6,4 +6,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.post('/', function(req, res){
+  var firstName = req.body.firstName;
+  console.log("I just got the ", firstName);
+});
+
 module.exports = router;
