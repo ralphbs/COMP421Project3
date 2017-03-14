@@ -11,7 +11,7 @@ var app = express();
 
 // connect to database
 var config = {
-  user: 'cajouz', //env var: PGUSER 
+  user: 'cs421g06', //env var: PGUSER 
   database: 'cs421', //env var: PGDATABASE 
   password: 'tisu612#', //env var: PGPASSWORD 
   host: 'comp421.cs.mcgill.ca', // Server hosting the postgres database 
@@ -20,13 +20,24 @@ var config = {
   idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed 
 };
 
+//   This code is an example of a query
+//   pool.connect(function(err, client, done) {
+//   if(err) {
+//     return console.error('error fetching client from pool', err);
+//   }
+// client.query('SELECT * FROM evaluation', function(err, result) {
+//     done(err);
+//     if(err) {
+//       return console.error('error running query', err);
+//     }
+//     console.log(result.rows);
+//   });
+// });
+
 var pool = new pg.Pool(config);
 
-// view engine html setup
-var engine = require('consolidate');
-app.set('views', path.join(__dirname, 'views'));
-app.engine('html', engine.mustache);
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/views'));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -36,27 +47,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// use routes
 //app.use('/', index);
 //app.use('/users', users);
 
 app.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', {test: 'Ralph'});
 });
 
 app.post('/', function(req, res){
-  pool.connect(function(err, client, done) {
-  if(err) {
-    return console.error('error fetching client from pool', err);
-  }
-client.query('SELECT * FROM evaluation', function(err, result) {
-    done(err);
-    if(err) {
-      return console.error('error running query', err);
-    }
-    console.log(result.rows);
-  });
-});
-  res.send(200);
+    var name = req.body.input_data;
+    res.render('index', {test: name});
 });
 
 // catch 404 and forward to error handler
