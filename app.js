@@ -6,8 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var pg = require('pg');
-require('query');
+var ejs = require('ejs');
+var read = require('fs').readFileSync;
+var join = require('path').join;
 var app = express();
+
+var str = read(join(__dirname, '/views/index.ejs'), 'utf8');
 
 // connect to database
 var config = {
@@ -39,30 +43,97 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use('/users', users);
 
 app.get('/', function(req, res, next) {
-  res.render('index', {arr: []});
+  pool.connect(function(err, client, done) {
+  if(err) {
+    return console.error('error fetching client from pool', err);
+  }
+  client.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'cs421g06'", function(err, result) {
+    done(err);
+    if(err) {
+      return console.error('error running query', err);
+    }
+    var tables = [];
+    for(var row in result.rows){
+      tables.push(result.rows[row]['table_name']);
+    }
+    var table_info = {};
+    table_info['employees'] = null;
+    table_info['tables'] = tables;
+    res.render('index', {table_info: table_info}); 
+    pg.end();
+    });
+  });
 });
 
 app.post('/', function(req, res){
-  var info = req.body.query_type;
-  if(info == "Get_Stats"){
-      pool.connect(function(err, client, done) {
-      if(err) {
-        return console.error('error fetching client from pool', err);
-      }
-      client.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'cs421g06'", function(err, result) {
+  var query_type = req.body.query_type;
+  var table_info = {};
+  table_info['tables'] = null;
+  if(query_type == "Get Statistics"){
+    var selected_option = req.body.selected_table;
+    var sql_query = "SELECT * FROM " + selected_option;
+    pool.connect(function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query(sql_query, function(err, result) {
       done(err);
       if(err) {
         return console.error('error running query', err);
       }
-      var arr = [];
-      for(var x in result.rows){
-        arr.push(result.rows[x]['table_name']);
-      }
-      console.log(arr);
+      if (selected_option == 'employee'){
+        table_info['employees'] = {};
+        var name  = [];
+        var employeeId = [];
+        var salary = [];
+        var branchid = [];
+        var streetaddress = [];
+        var city = [];
+        var province = [];
+        var employedsince = [];
+        for(var row in result.rows){
+          name.push(result.rows[row]['name']);
+        }
+        table_info['employees']['name'] = name;
+
+        for(var row in result.rows){
+          employeeId.push(result.rows[row]['employeeid']);
+        }
+        table_info['employees']['employeeid'] = employeeId;
+
+        for(var row in result.rows){
+          salary.push(result.rows[row]['salary']);
+        }
+        table_info['employees']['salary'] = salary;
+
+        for(var row in result.rows){
+          branchid.push(result.rows[row]['branchid']);
+        }
+        table_info['employees']['branchid'] = branchid;
+
+        for(var row in result.rows){
+          streetaddress.push(result.rows[row]['streetaddress']);
+        }
+        table_info['employees']['streetaddress'] = streetaddress;
+
+        for(var row in result.rows){
+          city.push(result.rows[row]['city']);
+        }
+        table_info['employees']['city'] = city;
+
+        for(var row in result.rows){
+          province.push(result.rows[row]['province']);
+        }
+        table_info['employees']['province'] = province;
+        for(var row in result.rows){
+          employedsince.push(result.rows[row]['employedsince']);
+        }
+        table_info['employees']['employedsince'] = employedsince;
+        console.log(table_info);
+        res.render('index', {table_info: table_info});
+      } 
     });
-  });
-  res.render('index', {arr: arr}); 
-  }
+  });}
 });
 
 // catch 404 and forward to error handler

@@ -2,6 +2,7 @@
 	<head>
 	<title>Dream Car Dealership</title>		
 	<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	</head>
 	<body>
 	<center><h1>Welcome to Dream Car Dealership!</h1></center>
@@ -11,13 +12,77 @@
 			<li>Assume the database queries only available stock to display.</li>
 			<li>Assume only an admin has access to this web app.</li>	
 		</ul>
-		<form method="post" action="/">
-		<select>
-  			<% arr.forEach(function(table) { %>
-      			<option><%= table %></option>
-  			<% }); %>
-		</select>
-				<input type="submit" name="query_type" value="Get_Stats"></input>
+		<form method="post" action="/" class="form-group">
+		<div class="form-group">
+			<label for="sel1">Get number of:</label>
+  				<select class='form-control' id='sel1' name='selected_table'>
+    				<% table_info['tables'].forEach(function (table) { %>
+      				<option value='<%= table %>'><%= table %></option>
+    				<% }) %>
+  				</select>
+  				<br>
+  			<input class="btn btn-info" type="submit" name="query_type" value="Get Statistics"></input>
+  		</div>
+  		<div class="form-group">
+  			<label for="sel2">Delete all cars of make:</label>
+  			<select class="form-control" id='sel2'>
+  				<option>test1</option>
+  				<option>test2</option>
+  				<option>test3</option>
+  			</select>
+  			<label for="sel3">manufactured before the year:</label>
+  			<select class="form-control" id='sel3'>
+  				<option>test1</option>
+  				<option>test2</option>
+  				<option>test3</option>
+  			</select>
+  			<label for="sel4">containing the option:</label>
+  			<select class="form-control" id='sel4'>
+  				<option>test1</option>
+  				<option>test2</option>
+  				<option>test3</option>
+  			</select>
+  			<label for="sel5">and maintained by the mechanic:</label>
+  			 <select class="form-control" id='sel5'>
+  			 	<option>test1</option>
+  				<option>test2</option>
+  				<option>test3</option>
+  			 </select>	
+  			 <br>
+  			<input class="btn btn-info" type="submit" name="query_type" value="Get Special Cars">
+  		</div>
 		</form>
+		<!--
+		<div>
+			<% if(table_info['employees']) { %>
+				<table>
+					 <tr>
+    					<th>Name</th>
+    					<th>Employee ID</th>
+    					<th>Salary</th>
+    					<th>Branch ID</th>
+    					<th>Street Address</th>
+    					<th>City</th>
+    					<th>Province</th>
+    					<th>Employed Since</th>  					
+    				</tr>
+    				<% for(var j = 0; j < table_info['employees'].name.length; j++) { %>
+    					<tr>
+    				   	<% for(var i = 0; i<table_info['employees'].name.length; i++){ %>
+    				   	 	<td><%= table_info['employees']['name'][i] %></td>
+    				   	 	<td><%= table_info['employees']['employeeid'][i] %></td>
+    				   	 	<td><%= table_info['employees']['salary'][i] %></td>
+    				   	 	<td><%= table_info['employees']['branchid'][i] %></td>
+    				   	 	<td><%= table_info['employees']['streetaddress'][i] %></td>
+    				   	 	<td><%= table_info['employees']['city'][i] %></td>
+    				   	 	<td><%= table_info['employees']['province'][i] %></td>
+    				   	 	<td><%= table_info['employees']['employedsince'][i] %></td>
+    						<%}%>
+    					</tr>
+    				<%}%>				
+				</table>
+			<%}%>
+		</div>
+		-->
 	</body>
 </html>
