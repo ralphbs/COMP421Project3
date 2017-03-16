@@ -12,11 +12,11 @@
 			<li>Assume only an admin has access to this web app.</li>	
 		</ul>
 		<form method="post" action="/">
-		<div>
+		<select>
   			<% arr.forEach(function(table) { %>
-      			<p><%= table %></p>
+      			<option><%= table %></option>
   			<% }); %>
-		</div>
+		</select>
 				<input type="submit" name="query_type" value="Get_Stats"></input>
 		</form>
 	</body>
