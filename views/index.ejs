@@ -1,9 +1,23 @@
 <html>
+	<head>
+	<title>Dream Car Dealership</title>		
+	<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+	</head>
 	<body>
+	<center><h1>Welcome to Dream Car Dealership!</h1></center>
+
+	<p>Assumptions: </p>
+		<ul>
+			<li>Assume the database queries only available stock to display.</li>
+			<li>Assume only an admin has access to this web app.</li>	
+		</ul>
 		<form method="post" action="/">
-				<input type="text" name="input_data">
-				<input type="submit" value="Click here so that the server will modify the name you see on the screen by the name you provide.">
-				<div><%= test %></div> <!--This is known as ejs. So that we give names to the variables we want the server to be able to modify-->
+		<div>
+  			<% arr.forEach(function(table) { %>
+      			<p><%= table %></p>
+  			<% }); %>
+		</div>
+				<input type="submit" name="query_type" value="Get_Stats"></input>
 		</form>
 	</body>
 </html>

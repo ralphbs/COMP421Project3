@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var pg = require('pg');
-
+require('query');
 var app = express();
 
 // connect to database
@@ -20,19 +20,6 @@ var config = {
   idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed 
 };
 
-//   This code is an example of a query
-//   pool.connect(function(err, client, done) {
-//   if(err) {
-//     return console.error('error fetching client from pool', err);
-//   }
-// client.query('SELECT * FROM evaluation', function(err, result) {
-//     done(err);
-//     if(err) {
-//       return console.error('error running query', err);
-//     }
-//     console.log(result.rows);
-//   });
-// });
 
 var pool = new pg.Pool(config);
 
@@ -52,12 +39,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use('/users', users);
 
 app.get('/', function(req, res, next) {
-  res.render('index', {test: 'Ralph'});
+  res.render('index', {arr: []});
 });
 
 app.post('/', function(req, res){
-    var name = req.body.input_data;
-    res.render('index', {test: name});
+  var info = req.body.query_type;
+  if(info == "Get_Stats"){
+      pool.connect(function(err, client, done) {
+      if(err) {
+        return console.error('error fetching client from pool', err);
+      }
+      client.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'cs421g06'", function(err, result) {
+      done(err);
+      if(err) {
+        return console.error('error running query', err);
+      }
+      var arr = [];
+      for(var x in result.rows){
+        arr.push(result.rows[x]['table_name']);
+      }
+      console.log(arr);
+    });
+  });
+  res.render('index', {arr: arr}); 
+  }
 });
 
 // catch 404 and forward to error handler
