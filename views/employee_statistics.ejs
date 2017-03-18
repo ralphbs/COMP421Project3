@@ -9,10 +9,9 @@
         <th>Province</th>
         <th>Employed Since</th>                     
     </tr>
-    <% table_info.employees.name.forEach(function(j, batata){ %>            
-        <% table_info.employees.name.forEach(function(name, i){ %>
+    <% table_info.employees.employeeid.forEach(function(val, i){ %>     
         <tr>
-            <td><%= table_info['employees'].name[i] %></td>
+                <td><%= table_info['employees'].name[i] %></td>
                 <td><%= table_info['employees'].employeeid[i] %></td>
                 <td><%= table_info['employees'].salary[i] %></td>
                 <td><%= table_info['employees'].branchid[i] %></td>
@@ -20,7 +19,6 @@
                 <td><%= table_info['employees'].city[i] %></td>
                 <td><%= table_info['employees'].province[i] %></td>
                 <td><%= table_info['employees'].employedsince[i] %></td>
-            </tr>
-                <% }) %>
-            <% }) %>
+        </tr>
+    <% }) %>
 </table>

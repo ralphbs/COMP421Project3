@@ -60,7 +60,6 @@ app.get('/', function(req, res, next) {
     table_info['employees'] = {};
     table_info['tables'] = tables;
     res.render('index', {table_info: table_info}); 
-    console.log(table_info);
     pg.end();
     });
   });
