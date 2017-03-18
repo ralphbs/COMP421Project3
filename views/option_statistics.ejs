@@ -1,0 +1,14 @@
+<table border="1">
+	<tr>
+		<th>Option ID</th>
+		<th>Option Type</th>
+		<th>Price	</th>
+	</tr>
+	<% table_info.option.optionid.forEach(function(val, i){ %>
+			<tr>
+				<td><%= table_info['option'].optionid[i] %></td>
+				<td><%= table_info['option'].optiontype[i] %></td>
+				<td><%= table_info['option'].price[i] %></td>
+			</tr>
+		<% }) %>
+</table>

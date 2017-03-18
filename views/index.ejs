@@ -26,22 +26,22 @@
   		<div class="form-group">
   			<label for="sel2">Delete all cars of make:</label>
   			<select class="form-control" id='sel2'>
-    				<% car_info['make'].forEach(function (table) { %>
+    				<% table_info['cars'].make.forEach(function (table) { %>
       				<option value='<%= table %>'><%= table %></option>
     				<% }) %>
   			</select>
   			<label for="sel3">manufactured before the year:</label>
   			<select class="form-control" id='sel3'>
-    				<% car_info['year'].forEach(function (table) { %>
+    				<% table_info['cars'].year.forEach(function (table) { %>
       				<option value='<%= table %>'><%= table %></option>
     				<% }) %>
   			</select>
   			<label for="sel4">containing the option:</label>
   			<select class="form-control" id='sel4'>
-  				<option>test1</option>
-  				<option>test2</option>
-  				<option>test3</option>
-  			</select>
+    				<% table_info['options'].optiontype.forEach(function (table) { %>
+      				<option value='<%= table %>'><%= table %></option>
+    				<% }) %>
+				</select>
   			<label for="sel5">and maintained by the mechanic:</label>
   			 <select class="form-control" id='sel5'>
   			 	<option>test1</option>

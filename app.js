@@ -54,16 +54,25 @@ app.get('/', function(req, res, next) {
       tables.push(result.rows[row]['table_name']);
     }
     var table_info = {};
-    table_info['employees'] = {};
     table_info['tables'] = tables;
 		
 				
 		getStatistics("car", function(car_info) {
-			var car_needed_info = {}
-			car_needed_info['make'] = car_info.car.make.filter(dup);
-			car_needed_info['year'] = car_info.car.year.filter(dup);
-			res.render('index', {car_info : car_needed_info, table_info: table_info}); 
-			pg.end();
+			var cars = {};
+			cars['make'] = car_info.car.make.filter(dup);
+			cars['year'] = car_info.car.year.filter(dup);
+			table_info['cars'] = cars;
+			
+			getStatistics("option", function(option_info) {
+				var options = {}
+				console.log(option_info);
+				options['optionid'] = option_info.option.optionid.filter(dup);
+				options['optiontype'] = option_info.option.optiontype.filter(dup);
+				table_info['options'] = options;
+
+				res.render('index', {table_info: table_info}); 
+				pg.end();
+			});
 		});
 
     });
@@ -257,6 +266,29 @@ function handleCarStatistics(table_info, result){
   return table_info;
 }
 
+function handleOptionStatistics(table_info, result){
+  table_info['option'] = {};
+  var optionid   = []; 
+	var optiontype = []; 
+  var price      = []; 
+
+	for (var row in result.rows) {
+		optionid.push(result.rows[row]['optionid']);
+	}
+	table_info['option']['optionid'] = optionid;
+
+	for (var row in result.rows) {
+		optiontype.push(result.rows[row]['optiontype']);
+	}
+	table_info['option']['optiontype'] = optiontype;
+
+	for (var row in result.rows) {
+		price.push(result.rows[row]['price']);
+	}
+	table_info['option']['price'] = price;
+
+	return table_info;
+}
 
 function getStatistics(relation, callback) {
 		var table_info = {}
@@ -276,6 +308,8 @@ function getStatistics(relation, callback) {
         table_info = handleBranchOfficeStatistics(table_info, result);
       } else if ( relation == 'car' ) {
 				table_info = handleCarStatistics(table_info,result);
+			} else if ( relation == "option") {
+				table_info = handleOptionStatistics(table_info, result);
 			}
 			return callback(table_info);
     });
