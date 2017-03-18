@@ -57,18 +57,100 @@ app.get('/', function(req, res, next) {
       tables.push(result.rows[row]['table_name']);
     }
     var table_info = {};
-    table_info['employees'] = null;
+    table_info['employees'] = {};
     table_info['tables'] = tables;
     res.render('index', {table_info: table_info}); 
+    console.log(table_info);
     pg.end();
     });
   });
 });
 
+function handleEmployeeStatistics(table_info, result){
+  table_info['employees'] = {};
+  var name  = [];
+  var employeeId = [];
+  var salary = [];
+  var branchid = [];  
+  var streetaddress = [];
+  var city = [];
+  var province = [];
+  var employedsince = [];
+  for(var row in result.rows){
+    name.push(result.rows[row]['name']);
+  }
+  table_info['employees']['name'] = name;
+
+  for(var row in result.rows){
+    employeeId.push(result.rows[row]['employeeid']);
+  }
+  table_info['employees']['employeeid'] = employeeId;
+
+  for(var row in result.rows){
+    salary.push(result.rows[row]['salary']);
+  }
+  table_info['employees']['salary'] = salary;
+
+  for(var row in result.rows){
+    branchid.push(result.rows[row]['branchid']);
+  }
+  table_info['employees']['branchid'] = branchid;
+
+  for(var row in result.rows){
+    streetaddress.push(result.rows[row]['streetaddress']);
+  }
+  table_info['employees']['streetaddress'] = streetaddress;
+
+  for(var row in result.rows){
+    city.push(result.rows[row]['city']);
+  }
+  table_info['employees']['city'] = city;
+
+  for(var row in result.rows){
+    province.push(result.rows[row]['province']);
+  }
+  table_info['employees']['province'] = province;
+  for(var row in result.rows){
+    employedsince.push(result.rows[row]['employedsince']);
+  }
+  table_info['employees']['employedsince'] = employedsince;
+  return table_info;
+}
+
+function handleBranchOfficeStatistics(table_info, result){
+  table_info['branchoffice'] = {};
+  var branchid  = [];
+  var streetaddress = [];
+  var city = [];
+  var province = [];  
+
+  for(var row in result.rows){
+    branchid.push(result.rows[row]['branchid']);
+  }
+  table_info['branchoffice']['branchid'] = branchid;
+
+  for(var row in result.rows){
+    streetaddress.push(result.rows[row]['streetaddress']);
+  }
+  table_info['branchoffice']['streetaddress'] = streetaddress;
+
+  for(var row in result.rows){
+    city.push(result.rows[row]['city']);
+  }
+  table_info['branchoffice']['city'] = city;
+
+  for(var row in result.rows){
+    province.push(result.rows[row]['province']);
+  }
+  table_info['branchoffice']['province'] = province;
+  
+  return table_info;
+}
+
+
 app.post('/', function(req, res){
   var query_type = req.body.query_type;
   var table_info = {};
-  table_info['tables'] = null;
   if(query_type == "Get Statistics"){
     var selected_option = req.body.selected_table;
     var sql_query = "SELECT * FROM " + selected_option;
@@ -81,59 +163,17 @@ app.post('/', function(req, res){
       if(err) {
         return console.error('error running query', err);
       }
-      if (selected_option == 'employee'){
-        table_info['employees'] = {};
-        var name  = [];
-        var employeeId = [];
-        var salary = [];
-        var branchid = [];
-        var streetaddress = [];
-        var city = [];
-        var province = [];
-        var employedsince = [];
-        for(var row in result.rows){
-          name.push(result.rows[row]['name']);
-        }
-        table_info['employees']['name'] = name;
-
-        for(var row in result.rows){
-          employeeId.push(result.rows[row]['employeeid']);
-        }
-        table_info['employees']['employeeid'] = employeeId;
-
-        for(var row in result.rows){
-          salary.push(result.rows[row]['salary']);
-        }
-        table_info['employees']['salary'] = salary;
-
-        for(var row in result.rows){
-          branchid.push(result.rows[row]['branchid']);
-        }
-        table_info['employees']['branchid'] = branchid;
-
-        for(var row in result.rows){
-          streetaddress.push(result.rows[row]['streetaddress']);
-        }
-        table_info['employees']['streetaddress'] = streetaddress;
-
-        for(var row in result.rows){
-          city.push(result.rows[row]['city']);
-        }
-        table_info['employees']['city'] = city;
-
-        for(var row in result.rows){
-          province.push(result.rows[row]['province']);
-        }
-        table_info['employees']['province'] = province;
-        for(var row in result.rows){
-          employedsince.push(result.rows[row]['employedsince']);
-        }
-        table_info['employees']['employedsince'] = employedsince;
-        console.log(table_info);
-        res.render('index', {table_info: table_info});
-      } 
+       if (selected_option == 'employee'){
+        table_info = handleEmployeeStatistics(table_info, result);
+        res.render('employee_statistics', {table_info: table_info}); 
+      }
+      if (selected_option == 'branchoffice'){
+        table_info = handleBranchOfficeStatistics(table_info, result);
+        res.render('branch_office_statistics', {table_info: table_info}); 
+      }
     });
-  });}
+  });
+  }
 });
 
 // catch 404 and forward to error handler

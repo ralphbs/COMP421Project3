@@ -1,0 +1,26 @@
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Employee ID</th>
+        <th>Salary</th>
+        <th>Branch ID</th>
+        <th>Street Address</th>
+        <th>City</th>
+        <th>Province</th>
+        <th>Employed Since</th>                     
+    </tr>
+    <% table_info.employees.name.forEach(function(j, batata){ %>            
+        <% table_info.employees.name.forEach(function(name, i){ %>
+        <tr>
+            <td><%= table_info['employees'].name[i] %></td>
+                <td><%= table_info['employees'].employeeid[i] %></td>
+                <td><%= table_info['employees'].salary[i] %></td>
+                <td><%= table_info['employees'].branchid[i] %></td>
+                <td><%= table_info['employees'].streetaddress[i] %></td>
+                <td><%= table_info['employees'].city[i] %></td>
+                <td><%= table_info['employees'].province[i] %></td>
+                <td><%= table_info['employees'].employedsince[i] %></td>
+            </tr>
+                <% }) %>
+            <% }) %>
+</table>

@@ -1,0 +1,18 @@
+<table border="1">
+    <tr>
+        <th>Branch ID</th>
+        <th>Street Address</th>
+        <th>City</th>
+        <th>Province</th>                   
+    </tr>
+    <% table_info.branchoffice.branchid.forEach(function(j, batata){ %>            
+        <% table_info.branchoffice.branchid.forEach(function(name, i){ %>
+        <tr>
+            <td><%= table_info['branchoffice'].branchid[i] %></td>
+            <td><%= table_info['branchoffice'].streetaddress[i] %></td>
+            <td><%= table_info['branchoffice'].city[i] %></td>
+            <td><%= table_info['branchoffice'].province[i] %></td>
+        </tr>
+        <% }) %>
+    <% }) %>
+</table>
