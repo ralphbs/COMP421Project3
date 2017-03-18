@@ -38,6 +38,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Steven : sorry for this poor nested design
 app.get('/', function(req, res, next) {
   pool.connect(function(err, client, done) {
   if(err) {
@@ -55,11 +56,23 @@ app.get('/', function(req, res, next) {
     var table_info = {};
     table_info['employees'] = {};
     table_info['tables'] = tables;
-    res.render('index', {table_info: table_info}); 
-    pg.end();
+		
+				
+		getStatistics("car", function(car_info) {
+			var car_needed_info = {}
+			car_needed_info['make'] = car_info.car.make.filter(dup);
+			car_needed_info['year'] = car_info.car.year.filter(dup);
+			res.render('index', {car_info : car_needed_info, table_info: table_info}); 
+			pg.end();
+		});
+
     });
   });
 });
+
+function dup(elem, index, self) {
+	return index == self.indexOf(elem);
+}
 
 function handleEmployeeStatistics(table_info, result){
   table_info['employees'] = {};
