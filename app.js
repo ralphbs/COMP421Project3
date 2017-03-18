@@ -38,10 +38,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// use routes
-//app.use('/', index);
-//app.use('/users', users);
-
 app.get('/', function(req, res, next) {
   pool.connect(function(err, client, done) {
   if(err) {
@@ -142,10 +138,9 @@ function handleBranchOfficeStatistics(table_info, result){
     province.push(result.rows[row]['province']);
   }
   table_info['branchoffice']['province'] = province;
-  
+
   return table_info;
 }
-
 
 app.post('/', function(req, res){
   var query_type = req.body.query_type;
