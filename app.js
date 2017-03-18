@@ -146,6 +146,109 @@ function handleBranchOfficeStatistics(table_info, result){
   return table_info;
 }
 
+function handleCarStatistics(table_info, result){
+  table_info['car'] = {};
+	var vin               = []; 
+	var	description       = []; 
+	var	licenseplate      = []; 
+	var	price             = []; 
+	var	model             = []; 
+	var	color             = []; 
+	var	year              = []; 
+	var	make              = []; 
+	var	fuel              = []; 
+	var	mileage           = []; 
+	var	acceleration      = []; 
+	var	enginetype        = []; 
+	var	drivertype        = []; 
+	var	branchid          = []; 
+	var	businessid        = []; 
+	var	manufacturedsince = []; 
+
+  for (var row in result.rows) {
+	vin.push(result.rows[row]['vin']);
+	}
+	table_info['car']['vin'] = vin;
+
+	for (var row in result.rows) {
+	description.push(result.rows[row]['description']);
+	}
+	table_info['car']['description'] = description;
+
+	for (var row in result.rows) {
+	licenseplate.push(result.rows[row]['licenseplate']);
+	}
+	table_info['car']['licenseplate'] = licenseplate;
+
+	for (var row in result.rows) {
+	price.push(result.rows[row]['price']);
+	}
+	table_info['car']['price'] = price;
+
+	for (var row in result.rows) {
+	model.push(result.rows[row]['model']);
+	}
+	table_info['car']['model'] = model;
+
+	for (var row in result.rows) {
+	color.push(result.rows[row]['color']);
+	}
+	table_info['car']['color'] = color;
+
+	for (var row in result.rows) {
+	year.push(result.rows[row]['year']);
+	}
+	table_info['car']['year'] = year;
+
+	for (var row in result.rows) {
+	make.push(result.rows[row]['make']);
+	}
+	table_info['car']['make'] = make;
+
+	for (var row in result.rows) {
+	fuel.push(result.rows[row]['fuel']);
+	}
+	table_info['car']['fuel'] = fuel;
+
+	for (var row in result.rows) {
+	mileage.push(result.rows[row]['mileage']);
+	}
+	table_info['car']['mileage'] = mileage;
+
+	for (var row in result.rows) {
+	acceleration.push(result.rows[row]['acceleration']);
+	}
+	table_info['car']['acceleration'] = acceleration;
+
+	for (var row in result.rows) {
+	enginetype.push(result.rows[row]['enginetype']);
+	}
+	table_info['car']['enginetype'] = enginetype;
+
+	for (var row in result.rows) {
+	drivertype.push(result.rows[row]['drivertype']);
+	}
+	table_info['car']['drivertype'] = drivertype;
+
+	for (var row in result.rows) {
+	branchid.push(result.rows[row]['branchid']);
+	}
+	table_info['car']['branchid'] = branchid;
+
+	for (var row in result.rows) {
+	businessid.push(result.rows[row]['businessid']);
+	}
+	table_info['car']['businessid'] = businessid;
+
+	for (var row in result.rows) {
+	manufacturedsince.push(result.rows[row]['manufacturedsince']);
+	}
+	table_info['car']['manufacturedsince'] = manufacturedsince;
+
+  return table_info;
+}
+
+
 function getStatistics(relation, callback) {
 		var table_info = {}
     var sql_query = "SELECT * FROM " + relation;
@@ -160,9 +263,11 @@ function getStatistics(relation, callback) {
       }
       if (relation == 'employee'){
         table_info = handleEmployeeStatistics(table_info, result);
-      } else if (relation== 'branchoffice'){
+      } else if (relation == 'branchoffice'){
         table_info = handleBranchOfficeStatistics(table_info, result);
-      }
+      } else if ( relation == 'car' ) {
+				table_info = handleCarStatistics(table_info,result);
+			}
 			return callback(table_info);
     });
   });	

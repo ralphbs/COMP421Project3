@@ -1,0 +1,41 @@
+<table border="1">
+	<tr>
+		<th>VIN</th>
+		<th>Description</th>
+		<th>License Plate</th>
+		<th>Price</th>
+		<th>Model</th>
+		<th>Color</th>
+		<th>Year</th>
+		<th>Make</th>
+		<th>Fuel</th>
+		<th>Mileage</th>
+		<th>Acceleration</th>
+		<th>Engine Type</th>
+		<th>Drive Type</th>
+		<th>Branch ID</th>
+		<th>Business ID</th>
+		<th>Manufactured Since</th>
+	</tr>
+	<% table_info.car.vin.forEach(function(val, i){ %>
+		<tr>
+			<td><%= table_info['car'].vin[i] %></td>
+			<td><%= table_info['car'].description[i] %></td>
+			<td><%= table_info['car'].licenseplate[i] %></td>
+			<td><%= table_info['car'].price[i] %></td>
+			<td><%= table_info['car'].model[i] %></td>
+			<td><%= table_info['car'].color[i] %></td>
+			<td><%= table_info['car'].year[i] %></td>
+			<td><%= table_info['car'].make[i] %></td>
+			<td><%= table_info['car'].fuel[i] %></td>
+			<td><%= table_info['car'].mileage[i] %></td>
+			<td><%= table_info['car'].acceleration[i] %></td>
+			<td><%= table_info['car'].enginetype[i] %></td>
+			<td><%= table_info['car'].drivertype[i] %></td>
+			<td><%= table_info['car'].branchid[i] %></td>
+			<td><%= table_info['car'].businessid[i] %></td>
+			<td><%= table_info['car'].manufacturedsince[i] %></td>
+		</tr>
+	<% }) %>
+</table>
+
