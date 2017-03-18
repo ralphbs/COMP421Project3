@@ -142,12 +142,9 @@ function handleBranchOfficeStatistics(table_info, result){
   return table_info;
 }
 
-app.post('/', function(req, res){
-  var query_type = req.body.query_type;
-  var table_info = {};
-  if(query_type == "Get Statistics"){
-    var selected_option = req.body.selected_table;
-    var sql_query = "SELECT * FROM " + selected_option;
+function getStatistics(relation, callback) {
+		var table_info = {}
+    var sql_query = "SELECT * FROM " + relation;
     pool.connect(function(err, client, done) {
     if(err) {
       return console.error('error fetching client from pool', err);
@@ -157,16 +154,24 @@ app.post('/', function(req, res){
       if(err) {
         return console.error('error running query', err);
       }
-       if (selected_option == 'employee'){
+      if (relation == 'employee'){
         table_info = handleEmployeeStatistics(table_info, result);
-        res.render('employee_statistics', {table_info: table_info}); 
-      }
-      if (selected_option == 'branchoffice'){
+      } else if (relation== 'branchoffice'){
         table_info = handleBranchOfficeStatistics(table_info, result);
-        res.render('branch_office_statistics', {table_info: table_info}); 
       }
+			return callback(table_info);
     });
-  });
+  });	
+}
+
+app.post('/', function(req, res){
+  var query_type = req.body.query_type;
+  var table_info = {};
+  if(query_type == "Get Statistics"){
+    var selected_option = req.body.selected_table;
+		getStatistics(selected_option, function(table_info) {
+			res.render(selected_option+'_statistics', {table_info: table_info}); 
+		});
   }
 });
 
