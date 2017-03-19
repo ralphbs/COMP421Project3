@@ -65,13 +65,19 @@ app.get('/', function(req, res, next) {
 			
 			getStatistics("option", function(option_info) {
 				var options = {}
-				console.log(option_info);
 				options['optionid'] = option_info.option.optionid.filter(dup);
 				options['optiontype'] = option_info.option.optiontype.filter(dup);
 				table_info['options'] = options;
 
-				res.render('index', {table_info: table_info}); 
-				pg.end();
+				getStatistics("mechanics", function(mechanics_info){
+					var mechanics = {}
+					mechanics['employeeid'] = mechanics_info.mechanics.employeeid.filter(dup);
+					mechanics['employeename'] = mechanics_info.mechanics.employeename.filter(dup);
+					table_info['mechanics'] = mechanics;
+
+					res.render('index', {table_info: table_info}); 
+					pg.end();
+				});
 			});
 		});
 
@@ -290,6 +296,36 @@ function handleOptionStatistics(table_info, result){
 	return table_info;
 }
 
+function handleMechanicStatistics(table_info, result){
+  table_info['mechanics'] = {};
+		var employeeid   = []; 
+		var employeename = []; 
+		var branch       = []; 
+		var salary       = []; 
+
+		for (var row in result.rows) {
+			employeeid.push(result.rows[row]['employeeid']);
+		}
+		table_info['mechanics']['employeeid'] = employeeid;
+
+		for (var row in result.rows) {
+			employeename.push(result.rows[row]['employeename']);
+		}
+		table_info['mechanics']['employeename'] = employeename;
+
+		for (var row in result.rows) {
+			branch.push(result.rows[row]['branch']);
+		}
+		table_info['mechanics']['branch'] = branch;
+
+		for (var row in result.rows) {
+			salary.push(result.rows[row]['salary']);
+		}
+		table_info['mechanics']['salary'] = salary;
+
+		return table_info;
+}
+
 function getStatistics(relation, callback) {
 		var table_info = {}
     var sql_query = "SELECT * FROM " + relation;
@@ -310,6 +346,8 @@ function getStatistics(relation, callback) {
 				table_info = handleCarStatistics(table_info,result);
 			} else if ( relation == "option") {
 				table_info = handleOptionStatistics(table_info, result);
+			} else if ( relation == "mechanics" ) {
+				table_info = handleMechanicStatistics(table_info, result);
 			}
 			return callback(table_info);
     });

@@ -15,11 +15,18 @@
 # "businessid       ", 
 # "manufacturedsince"] 
 
-relation = "option"
+#liste = [" optionid  ", 
+#" optiontype", 
+#" price     "] 
 
-liste = [" optionid  ", 
-" optiontype", 
-" price     "] 
+liste = ["employeeid  ", 
+"employeename", 
+"branch      ", 
+"salary      "] 
+
+
+relation = "mechanics"
+
 
 for idx, x in enumerate(liste):
 	liste[idx] = x.strip();
