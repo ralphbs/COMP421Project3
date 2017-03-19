@@ -38,8 +38,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Steven : sorry for this poor nested design
 app.get('/', function(req, res, next) {
+	refresh(req,res,next);
+});
+
+//Steven : sorry for this poor nested design
+function refresh(req, res, next) {
   pool.connect(function(err, client, done) {
   if(err) {
     return console.error('error fetching client from pool', err);
@@ -83,7 +87,7 @@ app.get('/', function(req, res, next) {
 
     });
   });
-});
+}
 
 function dup(elem, index, self) {
 	return index == self.indexOf(elem);
@@ -354,6 +358,62 @@ function getStatistics(relation, callback) {
   });	
 }
 
+function executeQuery(sql_query, callback) {
+    pool.connect(function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query(sql_query, function(err, result) {
+      done(err);
+      if(err) {
+        return console.error('error running query', err);
+      }
+
+			return callback(result);
+    });
+  });	
+}
+
+function deleteAlternative(make, year, option, employeeid, callback) {
+	var query_vin= "SELECT DISTINCT co.vin FROM maintenances m, carsandoptions co WHERE m.vin = co.vin AND co.make = '"+ make +"' AND co.year = '"+ year +"' AND optiontype = '"+ option +"' AND employeeid = '"+employeeid+"';"	
+	var selected_vin = [];
+	executeQuery(query_vin, function(result) {
+		for (var row in result.rows) {
+			selected_vin.push("'"+result.rows[row]['vin']+"'");
+		}
+
+		if (result.rowCount) {
+			var deleteQuery_transaction = 'DELETE FROM transaction WHERE contractid IN (SELECT contractid FROM contract WHERE vin IN ('+selected_vin.join(',')+'))';
+			executeQuery(deleteQuery_transaction, function(result) {
+
+				console.log("byeeeee");
+				var deleteQuery_contract = 'DELETE FROM contract WHERE vin IN ('+selected_vin.join(',')+')';
+				executeQuery(deleteQuery_contract, function(result) {
+
+					var deleteQuery_features = 'DELETE FROM features WHERE vin IN ('+selected_vin.join(',')+')';
+					executeQuery(deleteQuery_features, function(result) {
+						
+						var deleteQuery_performs= 'DELETE FROM performs WHERE vin IN ('+selected_vin.join(',')+')';
+						executeQuery(deleteQuery_performs, function(result) {
+							
+							var deleteQuery_car = 'DELETE FROM car WHERE vin IN ('+selected_vin.join(',')+')';
+							executeQuery(deleteQuery_car, function(result) {
+								console.log("deleted "+ selected_vin);
+								return callback(result.rowCount);
+							});
+						});
+					});
+				});
+			});
+		} else 
+				return callback(0);
+	});
+}
+
+
+//DELETE features
+//DELETE CAR
+
 app.post('/', function(req, res){
   var query_type = req.body.query_type;
   var table_info = {};
@@ -362,7 +422,24 @@ app.post('/', function(req, res){
 		getStatistics(selected_option, function(table_info) {
 			res.render(selected_option+'_statistics', {table_info: table_info}); 
 		});
-  }
+  } else if (query_type == "Get Special Cars") {
+		//TODO
+		var selected_make = req.body.selected_make;
+		var selected_year = req.body.selected_year;
+		var selected_option = req.body.selected_option;
+		var selected_mechanic = req.body.selected_mechanic;
+
+		deleteAlternative(selected_make, selected_year, selected_option, selected_mechanic, function(msg) {
+			if (msg) {
+				console.log("should render this page.");
+				//TODO: need table_info... to reload the page.. we because have big FORM, need to output feeback 
+			} else {
+				console.log("nothing deleted");
+			}
+			refresh(req,res,null);
+		});
+
+	}
 });
 
 // catch 404 and forward to error handler
