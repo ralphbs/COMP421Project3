@@ -50,8 +50,29 @@
 					</select>
   			 <br>
   			<input class="btn btn-info" type="submit" name="query_type" value="Get Special Cars">
-				<center><label> Special cars VIN : <%= table_info.special_cars.join(",") %></label></center>
+				<label> Special cars VIN : <%= table_info.special_cars.join(",") %></label>
 				<% table_info.special_cars = []; %>
+  		</div>
+  		<div class="form-group col">
+  			<label>Open a new Branch Office with a new Manager :</label><br>
+				<div style="float:left;">
+				<label>Branch Office :</label><br>
+				  Branch ID: <input type="text" name="bo_branchid"><br>
+					Street Address: <input type="text" name="bo_streetaddress"><br>
+					City: <input type="text" name="bo_city"><br>
+					Province: <input type="text" name="bo_province"><br>
+				</div>
+				<div style="padding-left:50%;">
+				<label>Manager :</label><br>	
+				  Employee ID: <input type="text" name="e_employeeid"><br>
+					Name: <input type="text" name="e_name"><br>
+					Salary: <input type="text" name="e_salary"><br>
+					Street Address: <input type="text" name="e_streetaddress"><br>
+					City: <input type="text" name="e_city"><br>
+					Province: <input type="text" name="e_province"><br>
+				</div>
+				<br>
+  			<input class="btn btn-info" type="submit" name="query_type" value="Open New Branch Office With Manager">
   		</div>
 		</form>
 	</body>
