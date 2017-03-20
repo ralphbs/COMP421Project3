@@ -50,6 +50,8 @@
 					</select>
   			 <br>
   			<input class="btn btn-info" type="submit" name="query_type" value="Get Special Cars">
+				<center><label> Special cars VIN : <%= table_info.special_cars.join(",") %></label></center>
+				<% table_info.special_cars = []; %>
   		</div>
 		</form>
 	</body>

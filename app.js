@@ -10,6 +10,8 @@ var ejs = require('ejs');
 var read = require('fs').readFileSync;
 var join = require('path').join;
 var app = express();
+var table_infos = {};  //this will hold globally the tables because we have to refresh page with new data including the old ones.
+table_infos['special_cars'] = [];
 
 var str = read(join(__dirname, '/views/index.ejs'), 'utf8');
 
@@ -53,33 +55,36 @@ function refresh(req, res, next) {
     if(err) {
       return console.error('error running query', err);
     }
+
+
     var tables = [];
     for(var row in result.rows){
       tables.push(result.rows[row]['table_name']);
     }
-    var table_info = {};
-    table_info['tables'] = tables;
-		
+
+		//initalize all the variables to be shown in the index page
+
+    table_infos['tables'] = tables;
 				
 		getStatistics("car", function(car_info) {
 			var cars = {};
 			cars['make'] = car_info.car.make.filter(dup);
 			cars['year'] = car_info.car.year.filter(dup);
-			table_info['cars'] = cars;
+			table_infos['cars'] = cars;
 			
 			getStatistics("option", function(option_info) {
 				var options = {}
 				options['optionid'] = option_info.option.optionid.filter(dup);
 				options['optiontype'] = option_info.option.optiontype.filter(dup);
-				table_info['options'] = options;
+				table_infos['options'] = options;
 
 				getStatistics("mechanics", function(mechanics_info){
 					var mechanics = {}
 					mechanics['employeeid'] = mechanics_info.mechanics.employeeid.filter(dup);
 					mechanics['employeename'] = mechanics_info.mechanics.employeename.filter(dup);
-					table_info['mechanics'] = mechanics;
+					table_infos['mechanics'] = mechanics;
 
-					res.render('index', {table_info: table_info}); 
+					res.render('index', {table_info: table_infos}); 
 					pg.end();
 				});
 			});
@@ -386,7 +391,6 @@ function deleteAlternative(make, year, option, employeeid, callback) {
 			var deleteQuery_transaction = 'DELETE FROM transaction WHERE contractid IN (SELECT contractid FROM contract WHERE vin IN ('+selected_vin.join(',')+'))';
 			executeQuery(deleteQuery_transaction, function(result) {
 
-				console.log("byeeeee");
 				var deleteQuery_contract = 'DELETE FROM contract WHERE vin IN ('+selected_vin.join(',')+')';
 				executeQuery(deleteQuery_contract, function(result) {
 
@@ -398,8 +402,7 @@ function deleteAlternative(make, year, option, employeeid, callback) {
 							
 							var deleteQuery_car = 'DELETE FROM car WHERE vin IN ('+selected_vin.join(',')+')';
 							executeQuery(deleteQuery_car, function(result) {
-								console.log("deleted "+ selected_vin);
-								return callback(result.rowCount);
+								return callback(selected_vin);
 							});
 						});
 					});
@@ -431,7 +434,8 @@ app.post('/', function(req, res){
 
 		deleteAlternative(selected_make, selected_year, selected_option, selected_mechanic, function(msg) {
 			if (msg) {
-				console.log("should render this page.");
+				table_infos['special_cars'] = msg;
+				console.log(msg + "deleted");
 				//TODO: need table_info... to reload the page.. we because have big FORM, need to output feeback 
 			} else {
 				console.log("nothing deleted");
