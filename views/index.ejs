@@ -98,6 +98,8 @@
 				<label> By an amount of : </label>
 				<input type="text" name="increase_amt">$<br>
   			<input class="btn btn-info" type="submit" name="query_type" value="Make An Increase">
+				<label style="color:green;"> <%=   table_info.success_update.join(",")  %></label/>
+				<% table_info.success_update= []; %>
   		</div>
 		</form>
 	</body>

@@ -18,6 +18,7 @@ table_infos['errors_e'] = [];
 table_infos['success_insert'] = [];
 
 table_infos['errors_amt'] = [];
+table_infos['success_update'] = [];
 
 var str = read(join(__dirname, '/views/index.ejs'), 'utf8');
 
@@ -458,6 +459,17 @@ function createAlternative(bo_sql, e_sql, m_sql, callback) {
 	});
 }
 
+function updateAlternative(eid, increase_amt, callback) {
+	var update_sql = "UPDATE employee SET salary = salary + " + increase_amt + " WHERE employeeid = '" + eid + "'"; 
+	console.log(update_sql); 
+	executeQuery(update_sql, function(result, err) {
+			if(err)
+					return callback(err.detail);
+					
+			return callback(result.rowCount);	
+	})
+}
+
 
 //DELETE features
 //DELETE CAR
@@ -547,7 +559,7 @@ app.post('/', function(req, res){
 			createAlternative(insert_bo_sql, insert_e_sql, insert_m_sql, function(msg) {
 				if (Number.isInteger(msg))
 					table_infos.success_insert.push("A New Branch Office " + bo_branchid +" has been created with Manager " + e_name + " !");
-				console.log(msg);
+				console.log("INSERT " + msg);
 			});
 		} else {
 			console.log("Creating a new branch office wtih manager errors !"); 
@@ -566,7 +578,15 @@ app.post('/', function(req, res){
 			table_infos.errors_amt.push("Amount has greater than 0.");
 
 		if (table_infos.errors_amt.length == 0) {
+			updateAlternative(selected_employee, increase_amt, function(msg) {
+				if (Number.isInteger(msg)) {
+						var idx = table_infos.employees.employeeid.indexOf(selected_employee);
+						var name = table_infos.employees.name[idx];
+						table_infos.success_update.push("Increase salary of employee " + name+ " by " + increase_amt+ "$.");
+				}
 
+					console.log("UPDATE " +msg);
+			});
 		} else {
 			console.log("Increase amount errors !");
 		}
