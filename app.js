@@ -87,8 +87,15 @@ function refresh(req, res, next) {
 					mechanics['employeename'] = mechanics_info.mechanics.employeename.filter(dup);
 					table_infos['mechanics'] = mechanics;
 
-					res.render('index', {table_info: table_infos}); 
-					pg.end();
+					getStatistics("employee", function(employee_info) {
+						var employees = {}
+						employees['employeeid'] = employee_info.employees.employeeid;
+						employees['name'] = employee_info.employees.name;	
+						table_infos['employees'] = employees;
+
+						res.render('index', {table_info: table_infos}); 
+						pg.end();
+					});
 				});
 			});
 		});

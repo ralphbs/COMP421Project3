@@ -87,8 +87,8 @@
   		<div class="form-group">
 				<label> Increase the salary of : </label><br>
   			<select class="form-control" id='sel4' name='selected_option'>
-    				<% table_info['options'].optiontype.forEach(function (table) { %>
-      				<option value='<%= table %>'><%= table %></option>
+    				<% table_info['employees'].employeeid.forEach(function (table, i) { %>
+      				<option value='<%= table %>'><%= table_info.employees.name[i] +" (ID :"+ table %>)</option>
     				<% }) %>
 				</select>
 				<label> By an amount of : </label>
