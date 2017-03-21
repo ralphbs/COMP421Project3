@@ -12,6 +12,9 @@ var join = require('path').join;
 var app = express();
 var table_infos = {};  //this will hold globally the tables because we have to refresh page with new data including the old ones.
 table_infos['special_cars'] = [];
+table_infos['errors_bo'] = [];
+table_infos['errors_e'] = [];
+table_infos['success_insert'] = [];
 
 var str = read(join(__dirname, '/views/index.ejs'), 'utf8');
 
@@ -371,9 +374,11 @@ function executeQuery(sql_query, callback) {
     client.query(sql_query, function(err, result) {
       done(err);
       if(err) {
-        return console.error('error running query', err);
+				console.log(err);
+        return callback('error running query', err);
       }
 
+			console.log(result);
 			return callback(result);
     });
   });	
@@ -413,6 +418,36 @@ function deleteAlternative(make, year, option, employeeid, callback) {
 	});
 }
 
+function createAlternative(bo_sql, e_sql, m_sql, callback) {
+	executeQuery(bo_sql, function(result_bo, err_bo) {
+		if (err_bo) {
+			table_infos.errors_bo.push(err_bo.detail);
+			return callback(err_bo.detail);
+		}
+
+		if(result_bo.rowCount) {
+			executeQuery(e_sql, function(result_e, err_e){
+				if (err_e) {
+					table_infos.errors_e.push(err_e.detail);
+					return callback(err_e.detail);
+				}
+
+				if (result_e.rowCount) {
+					executeQuery(m_sql, function(result, err_m) {
+						if (err_m)
+							return callback(err_m.detail);
+
+						return callback(result.rowCount);
+					});
+				} else
+						return callback("failed insert employee");
+
+			});
+		} else
+				return callback("failed insert branch office")
+	});
+}
+
 
 //DELETE features
 //DELETE CAR
@@ -442,7 +477,74 @@ app.post('/', function(req, res){
 			}
 			refresh(req,res,null);
 		});
+	} else if (query_type == "Open New Branch Office With Manager") {
+		var bo_branchid = req.body.bo_branchid;
+		var bo_streetaddress= req.body.bo_streetaddress;
+		var bo_city= req.body.bo_city;
+		var bo_province= req.body.bo_province;
 
+		if (bo_branchid.length > 3)
+			table_infos.errors_bo.push("Branch ID's length must at most 3.");
+		if (bo_branchid.length == 0)
+			table_infos.errors_bo.push("Branch ID's cannot be empty.");
+		if (bo_streetaddress.length == 0)
+			table_infos.errors_bo.push("Branch Street Address cannot be empty.");
+		if (bo_city.length == 0)
+			table_infos.errors_bo.push("Branch City cannot be empty.");
+		if (bo_province.length == 0)
+			table_infos.errors_bo.push("Branch Province cannot be empty.");
+
+		var insert_bo_sql = "INSERT INTO branchoffice VALUES ('" + bo_branchid + "','" + bo_streetaddress + "','" + bo_city + "','" + bo_province +"')";
+
+		console.log(insert_bo_sql);
+
+		var e_employeeid = req.body.e_employeeid;
+		var e_name = req.body.e_name;
+		var e_salary= req.body.e_salary;
+		var e_streetaddress= req.body.e_streetaddress;
+		var e_city= req.body.e_city;
+		var e_province= req.body.e_province;
+		var now = new Date();
+		var e_date =  (now.getMonth()+1) + "-" + now.getDate() + "-" + now.getFullYear();
+
+		if (e_employeeid.length > 6)
+			table_infos.errors_e.push("Employee ID's length must at most 6.");
+		if (e_employeeid.length == 0)
+			table_infos.errors_e.push("Employee ID's cannot be empty..");
+		if (e_name.length == 0)
+			table_infos.errors_e.push("Employee's name cannot be empty.");
+		if (e_salary.length == 0)
+			table_infos.errors_e.push("Employee's salary cannot be empty.");
+		if (!Number.isInteger(parseInt(e_salary)))
+			table_infos.errors_e.push("Employee's salary has to be an integer.");
+		if (parseInt(e_salary) < 20000 )
+			table_infos.errors_e.push("Employee's salary has greater than 20000.");
+		if (e_streetaddress.length == 0)
+			table_infos.errors_e.push("Employee's Street Address cannot be empty.");
+		if (e_city.length == 0)
+			table_infos.errors_e.push("Employee's City cannot be empty.");
+		if (e_province.length == 0)
+			table_infos.errors_e.push("Employee's Province cannot be empty.");
+
+		var insert_e_sql = "INSERT INTO employee VALUES ('" + e_employeeid + "','" + e_name + "'," + e_salary + ",'"+ bo_branchid + "','" + e_streetaddress + "','" + e_city + "','" + e_province + "','" + e_date + "')";
+
+		var insert_m_sql = "INSERT INTO manager VALUES ('" + e_employeeid + "')";
+
+		console.log(insert_e_sql);
+		console.log(insert_m_sql);
+
+		if (table_infos.errors_bo.length == 0 && table_infos.errors_e.length == 0) {
+			createAlternative(insert_bo_sql, insert_e_sql, insert_m_sql, function(msg) {
+				if (Number.isInteger(msg))
+					table_infos.success_insert.push("A New Branch Office " + bo_branchid +" has been created with Manager " + e_name + " !");
+				console.log(msg);
+			});
+		} else {
+			console.log("errors"); 
+		}
+
+
+		refresh(req,res,null);
 	}
 });
 

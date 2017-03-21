@@ -56,6 +56,10 @@
   		<div class="form-group col">
   			<label>Open a new Branch Office with a new Manager :</label><br>
 				<div style="float:left;">
+				<% table_info.errors_bo.forEach(function(val, i) { %>
+				<li style="color:red;"><%= table_info.errors_bo[i] %></li>
+				<% }) %>
+				<% table_info.errors_bo= []; %>
 				<label>Branch Office :</label><br>
 				  Branch ID: <input type="text" name="bo_branchid"><br>
 					Street Address: <input type="text" name="bo_streetaddress"><br>
@@ -63,6 +67,10 @@
 					Province: <input type="text" name="bo_province"><br>
 				</div>
 				<div style="padding-left:50%;">
+				<% table_info.errors_e.forEach(function(val, i) { %>
+				<li style="color:red;"><%= table_info.errors_e[i] %></li>
+				<% }) %>
+				<% table_info.errors_e= []; %>
 				<label>Manager :</label><br>	
 				  Employee ID: <input type="text" name="e_employeeid"><br>
 					Name: <input type="text" name="e_name"><br>
@@ -71,8 +79,11 @@
 					City: <input type="text" name="e_city"><br>
 					Province: <input type="text" name="e_province"><br>
 				</div>
-				<br>
   			<input class="btn btn-info" type="submit" name="query_type" value="Open New Branch Office With Manager">
+				<br>
+				<label style="color:green;"> <%= table_info.success_insert.join(",")  %></label/>
+				<% table_info.success_insert= []; %>
+
   		</div>
 		</form>
 	</body>
