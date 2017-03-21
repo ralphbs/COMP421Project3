@@ -12,9 +12,12 @@ var join = require('path').join;
 var app = express();
 var table_infos = {};  //this will hold globally the tables because we have to refresh page with new data including the old ones.
 table_infos['special_cars'] = [];
+
 table_infos['errors_bo'] = [];
 table_infos['errors_e'] = [];
 table_infos['success_insert'] = [];
+
+table_infos['errors_amt'] = [];
 
 var str = read(join(__dirname, '/views/index.ejs'), 'utf8');
 
@@ -547,10 +550,29 @@ app.post('/', function(req, res){
 				console.log(msg);
 			});
 		} else {
-			console.log("errors"); 
+			console.log("Creating a new branch office wtih manager errors !"); 
+		}
+
+		refresh(req,res,null);
+	} else if ( query_type == "Make An Increase") {
+		var selected_employee = req.body.selected_employee;
+		var increase_amt = req.body.increase_amt;
+
+		if (increase_amt.length == 0)
+			table_infos.errors_amt.push("Amount cannot be empty.");
+		if (!Number.isInteger(parseInt(increase_amt)))
+			table_infos.errors_amt.push("Amount has to be an integer.");
+		if (parseInt(increase_amt) < 0 )
+			table_infos.errors_amt.push("Amount has greater than 0.");
+
+		if (table_infos.errors_amt.length == 0) {
+
+		} else {
+			console.log("Increase amount errors !");
 		}
 
 
+		console.log("MAKE AN INCREASE ! to " + selected_employee + " of " + increase_amt );
 		refresh(req,res,null);
 	}
 });
