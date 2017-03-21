@@ -83,7 +83,17 @@
 				<br>
 				<label style="color:green;"> <%= table_info.success_insert.join(",")  %></label/>
 				<% table_info.success_insert= []; %>
-
+  		</div>
+  		<div class="form-group">
+				<label> Increase the salary of : </label><br>
+  			<select class="form-control" id='sel4' name='selected_option'>
+    				<% table_info['options'].optiontype.forEach(function (table) { %>
+      				<option value='<%= table %>'><%= table %></option>
+    				<% }) %>
+				</select>
+				<label> By an amount of : </label>
+				<input type="text" name="increase_amt">$<br>
+  			<input class="btn btn-info" type="submit" name="query_type" value="Make An Increase">
   		</div>
 		</form>
 	</body>
