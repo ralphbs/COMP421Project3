@@ -1,0 +1,41 @@
+<table border="1">
+<tr>
+	<th>Maintenance ID</th>
+	<th>Maintenance Type</th>
+	<th>Maintenance Date</th>
+	<th>Vin</th>
+	<th>Employee ID</th>
+</tr>
+<% table_info.maintenances.maintenanceid.forEach(function(val,i) { %>
+		<tr>
+			<td><%= table_info['maintenances'].maintenanceid[i] %></td>
+			<td><%= table_info['maintenances'].maintenancetype[i] %></td>
+			<td><%= table_info['maintenances'].maintenancedate[i] %></td>
+			<td><%= table_info['maintenances'].vin[i] %></td>
+			<td><%= table_info['maintenances'].employeeid[i] %></td>
+		</tr>
+		<% }) %>
+</table><br>
+
+<table border="1">
+<tr>
+	<th>Contract ID</th>
+	<th>Date Of Initiation</th>
+	<th>Content</th>
+	<th>Price</th>
+	<th>Employee Id</th>
+	<th>Drivers License</th>
+	<th>Vin</th>
+</tr>
+<% contract_info.contracts.contractid.forEach(function(val,i) { %>
+		<tr>
+			<td><%= contract_info['contracts'].contractid[i] %></td>
+			<td><%= contract_info['contracts'].dateofinitiation[i] %></td>
+			<td><%= contract_info['contracts'].content[i] %></td>
+			<td><%= contract_info['contracts'].price[i] %></td>
+			<td><%= contract_info['contracts'].employeeid[i] %></td>
+			<td><%= contract_info['contracts'].driverslicense[i] %></td>
+			<td><%= contract_info['contracts'].vin[i] %></td>
+		</tr>
+		<% }) %>
+</table>

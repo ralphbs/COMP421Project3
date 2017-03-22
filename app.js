@@ -349,6 +349,91 @@ function handleMechanicStatistics(table_info, result){
 		return table_info;
 }
 
+function handleMaintenancesStatistics(table_info, result) {
+	table_info['maintenances'] = {};
+
+	var maintenanceid = [];
+	var maintenancetype = [];
+	var maintenancedate = [];
+	var vin = [];
+	var employeeid = [];
+
+	for (var row in result.rows) {
+		maintenanceid.push(result.rows[row]['maintenanceid']);
+	}
+	table_info['maintenances']['maintenanceid'] = maintenanceid;
+
+	for (var row in result.rows) {
+		maintenancetype.push(result.rows[row]['maintenancetype']);
+	}
+	table_info['maintenances']['maintenancetype'] = maintenancetype;
+
+	for (var row in result.rows) {
+		maintenancedate.push(result.rows[row]['maintenancedate']);
+	}
+	table_info['maintenances']['maintenancedate'] = maintenancedate;
+
+	for (var row in result.rows) {
+		vin.push(result.rows[row]['vin']);
+	}
+	table_info['maintenances']['vin'] = vin;
+
+	for (var row in result.rows) {
+		employeeid.push(result.rows[row]['employeeid']);
+	}
+	table_info['maintenances']['employeeid'] = employeeid;
+
+	return table_info;
+}
+function handleContractsStatistics(table_info, result) {
+	table_info['contracts'] = {};
+
+	var contractid = [];
+	var dateofinitiation = [];
+	var content = [];
+	var price = [];
+	var employeeid = [];
+	var driverslicense = [];
+	var vin = [];
+
+	for (var row in result.rows) {
+		contractid.push(result.rows[row]['contractid']);
+	}
+	table_info['contracts']['contractid'] = contractid;
+
+	for (var row in result.rows) {
+		dateofinitiation.push(result.rows[row]['dateofinitiation']);
+	}
+	table_info['contracts']['dateofinitiation'] = dateofinitiation;
+
+	for (var row in result.rows) {
+		content.push(result.rows[row]['content']);
+	}
+	table_info['contracts']['content'] = content;
+
+	for (var row in result.rows) {
+		price.push(result.rows[row]['price']);
+	}
+	table_info['contracts']['price'] = price;
+
+	for (var row in result.rows) {
+		employeeid.push(result.rows[row]['employeeid']);
+	}
+	table_info['contracts']['employeeid'] = employeeid;
+
+	for (var row in result.rows) {
+		driverslicense.push(result.rows[row]['driverslicense']);
+	}
+	table_info['contracts']['driverslicense'] = driverslicense;
+
+	for (var row in result.rows) {
+		vin.push(result.rows[row]['vin']);
+	}
+	table_info['contracts']['vin'] = vin;
+
+	return table_info;
+}
+
 function getStatistics(relation, callback) {
 		var table_info = {}
     var sql_query = "SELECT * FROM " + relation;
@@ -371,7 +456,12 @@ function getStatistics(relation, callback) {
 				table_info = handleOptionStatistics(table_info, result);
 			} else if ( relation == "mechanics" ) {
 				table_info = handleMechanicStatistics(table_info, result);
+			} else if ( relation == "maintenances" ) {
+				table_info = handleMaintenancesStatistics(table_info, result);
+			} else if ( relation == "contract" ) {
+				table_info = handleContractsStatistics(table_info, result);
 			}
+
 			return callback(table_info);
     });
   });	
@@ -594,6 +684,12 @@ app.post('/', function(req, res){
 
 		console.log("MAKE AN INCREASE ! to " + selected_employee + " of " + increase_amt );
 		refresh(req,res,null);
+	} else if (query_type == "View Work") {
+		getStatistics("maintenances", function(table_info) {
+			getStatistics("contract", function(contract_info) {
+				res.render('work_statistics', {table_info: table_info, contract_info : contract_info}); 
+			});
+		});
 	}
 });
 
