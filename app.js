@@ -20,6 +20,8 @@ table_infos['success_insert'] = [];
 table_infos['errors_amt'] = [];
 table_infos['success_update'] = [];
 
+table_infos['errors_date'] = [];
+
 var str = read(join(__dirname, '/views/index.ejs'), 'utf8');
 
 // connect to database
@@ -73,25 +75,25 @@ function refresh(req, res, next) {
 
     table_infos['tables'] = tables;
 				
-		getStatistics("car", function(car_info) {
+		getStatistics("car","", function(car_info) {
 			var cars = {};
 			cars['make'] = car_info.car.make.filter(dup);
 			cars['year'] = car_info.car.year.filter(dup);
 			table_infos['cars'] = cars;
 			
-			getStatistics("option", function(option_info) {
+			getStatistics("option","", function(option_info) {
 				var options = {}
 				options['optionid'] = option_info.option.optionid.filter(dup);
 				options['optiontype'] = option_info.option.optiontype.filter(dup);
 				table_infos['options'] = options;
 
-				getStatistics("mechanics", function(mechanics_info){
+				getStatistics("mechanics","", function(mechanics_info){
 					var mechanics = {}
 					mechanics['employeeid'] = mechanics_info.mechanics.employeeid.filter(dup);
 					mechanics['employeename'] = mechanics_info.mechanics.employeename.filter(dup);
 					table_infos['mechanics'] = mechanics;
 
-					getStatistics("employee", function(employee_info) {
+					getStatistics("employee","", function(employee_info) {
 						var employees = {}
 						employees['employeeid'] = employee_info.employees.employeeid;
 						employees['name'] = employee_info.employees.name;	
@@ -434,9 +436,9 @@ function handleContractsStatistics(table_info, result) {
 	return table_info;
 }
 
-function getStatistics(relation, callback) {
+function getStatistics(relation, where, callback) {
 		var table_info = {}
-    var sql_query = "SELECT * FROM " + relation;
+    var sql_query = "SELECT * FROM " + relation + " " + where;
     pool.connect(function(err, client, done) {
     if(err) {
       return console.error('error fetching client from pool', err);
@@ -569,7 +571,7 @@ app.post('/', function(req, res){
   var table_info = {};
   if(query_type == "Get Statistics"){
     var selected_option = req.body.selected_table;
-		getStatistics(selected_option, function(table_info) {
+		getStatistics(selected_option,"", function(table_info) {
 			res.render(selected_option+'_statistics', {table_info: table_info}); 
 		});
   } else if (query_type == "Get Special Cars") {
@@ -685,11 +687,39 @@ app.post('/', function(req, res){
 		console.log("MAKE AN INCREASE ! to " + selected_employee + " of " + increase_amt );
 		refresh(req,res,null);
 	} else if (query_type == "View Work") {
-		getStatistics("maintenances", function(table_info) {
-			getStatistics("contract", function(contract_info) {
-				res.render('work_statistics', {table_info: table_info, contract_info : contract_info}); 
+
+		var work_date = req.body.work_date;
+		var arr_date = work_date.split('');
+		
+		if (work_date.length == 0)
+			table_infos.errors_date.push("Date cannot be empty.");
+		if (work_date.length != 10)
+			table_infos.errors_date.push("Date's length must be 10.");
+		for (var i = 0; i < arr_date.length; i++) {
+			if (i != 2 && i != 5) {
+				if (!Number.isInteger(parseInt(arr_date[i]))) {
+					table_infos.errors_date.push("Date's has an i ncorrect format. Please respect MM-DD-YYYY.");
+					break;
+				}
+			} else {
+				if (arr_date[i] != "-") {
+					table_infos.errors_date.push("Date's has an incorrect format. Please respect MM-DD-YYYY.");
+					break;
+				}
+			} 
+		}
+
+		if (table_infos.errors_date.length == 0) {
+			getStatistics("maintenances","WHERE maintenancedate = '"+work_date+"'", function(table_info) {
+				getStatistics("contract","WHERE dateofinitiation = '"+work_date+"'", function(contract_info) {
+					res.render('work_statistics', {table_info: table_info, contract_info : contract_info}); 
+				});
 			});
-		});
+		} else {
+			console.log("Work date errors !")
+			refresh(req,res,null);
+		}
+
 	}
 });
 

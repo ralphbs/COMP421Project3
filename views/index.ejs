@@ -103,6 +103,10 @@
   		</div>
   		<div class="form-group">
 				<label> View the work done on :  </label><br>
+				<% table_info.errors_date.forEach(function(val, i) { %>
+				<li style="color:red;"><%= table_info.errors_date[i] %></li>
+				<% }) %>
+				<% table_info.errors_date= []; %>
 				<input type="text" placeholder="mm-dd-yyyy" name="work_date"><br>
   			<input class="btn btn-info" type="submit" name="query_type" value="View Work">
   		</div>
