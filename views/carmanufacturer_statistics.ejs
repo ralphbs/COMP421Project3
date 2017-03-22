@@ -1,0 +1,19 @@
+
+<table border="1">
+<tr>
+<th>Business ID</th>
+<th>Name</th>
+<th>Street Address</th>
+<th>City</th>
+<th>Province</th>
+</tr>
+<% table_info.carmanufacturers.businessid.forEach(function(val,i) { %>
+<tr>
+<td><%= table_info['carmanufacturers'].businessid[i] %></td>
+<td><%= table_info['carmanufacturers'].name[i] %></td>
+<td><%= table_info['carmanufacturers'].streetaddress[i] %></td>
+<td><%= table_info['carmanufacturers'].city[i] %></td>
+<td><%= table_info['carmanufacturers'].province[i] %></td>
+</tr>
+<% }) %>
+</table>

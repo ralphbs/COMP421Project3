@@ -30,15 +30,42 @@
 #"vin            ", 
 #"employeeid     "] 
 
-liste = ["contractid      ", 
-"dateofinitiation", 
-"content         ", 
-"price           ", 
-"employeeid      ", 
-"driverslicense  ", 
-"vin             "] 
+#liste = ["contractid      ", 
+#"dateofinitiation", 
+#"content         ", 
+#"price           ", 
+#"employeeid      ", 
+#"driverslicense  ", 
+#"vin             "] 
 
-relation = "contracts"
+#liste = ["businessid   ", 
+#"name         ", 
+#"streetaddress", 
+#"city         ", 
+#"province     "] 
+
+#liste = ["driverslicense ", 
+#"name           ", 
+#"phonenumber    ", 
+#"email          ", 
+#"streetaddress  ", 
+#"city           ", 
+#"province       ", 
+#"governmentalid "] 
+
+#liste = ["transactionid ", 
+#"paymenttype   ", 
+#"time          ", 
+#"accountid     ", 
+#"amount        ", 
+#"contractid    "] 
+
+liste = ["vin          ", 
+"employeeid   ", 
+"maintenanceid" ]
+
+
+relation = "performs"
 
 
 

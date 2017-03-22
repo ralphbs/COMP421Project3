@@ -1,0 +1,14 @@
+<table border="1">
+<tr>
+<th>vin</th>
+<th>employeeid</th>
+<th>maintenanceid</th>
+</tr>
+<% table_info.performs.vin.forEach(function(val,i) { %>
+<tr>
+<td><%= table_info['performs'].vin[i] %></td>
+<td><%= table_info['performs'].employeeid[i] %></td>
+<td><%= table_info['performs'].maintenanceid[i] %></td>
+</tr>
+<% }) %>
+</table>

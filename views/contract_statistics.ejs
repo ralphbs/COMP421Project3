@@ -1,0 +1,22 @@
+<table border="1">
+<tr>
+<th>contractid</th>
+<th>dateofinitiation</th>
+<th>content</th>
+<th>price</th>
+<th>employeeid</th>
+<th>driverslicense</th>
+<th>vin</th>
+</tr>
+<% table_info.contracts.contractid.forEach(function(val,i) { %>
+<tr>
+<td><%= table_info['contracts'].contractid[i] %></td>
+<td><%= table_info['contracts'].dateofinitiation[i] %></td>
+<td><%= table_info['contracts'].content[i] %></td>
+<td><%= table_info['contracts'].price[i] %></td>
+<td><%= table_info['contracts'].employeeid[i] %></td>
+<td><%= table_info['contracts'].driverslicense[i] %></td>
+<td><%= table_info['contracts'].vin[i] %></td>
+</tr>
+<% }) %>
+</table>

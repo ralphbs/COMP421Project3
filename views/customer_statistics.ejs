@@ -1,0 +1,24 @@
+<table border="1">
+<tr>
+<th>driverslicense</th>
+<th>name</th>
+<th>phonenumber</th>
+<th>email</th>
+<th>streetaddress</th>
+<th>city</th>
+<th>province</th>
+<th>governmentalid</th>
+</tr>
+<% table_info.customers.driverslicense.forEach(function(val,i) { %>
+<tr>
+<td><%= table_info['customers'].driverslicense[i] %></td>
+<td><%= table_info['customers'].name[i] %></td>
+<td><%= table_info['customers'].phonenumber[i] %></td>
+<td><%= table_info['customers'].email[i] %></td>
+<td><%= table_info['customers'].streetaddress[i] %></td>
+<td><%= table_info['customers'].city[i] %></td>
+<td><%= table_info['customers'].province[i] %></td>
+<td><%= table_info['customers'].governmentalid[i] %></td>
+</tr>
+<% }) %>
+</table>

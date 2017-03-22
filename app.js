@@ -70,6 +70,16 @@ function refresh(req, res, next) {
     for(var row in result.rows){
       tables.push(result.rows[row]['table_name']);
     }
+		
+		//removing uselss tables
+		var index = tables.indexOf("mechanic");
+		tables.splice(index, 1);
+		index = tables.indexOf("manager");
+		tables.splice(index, 1);
+		index = tables.indexOf("salesman");
+		tables.splice(index, 1);
+		index = tables.indexOf("maintenance");
+		tables.splice(index, 1);
 
 		//initalize all the variables to be shown in the index page
 
@@ -436,6 +446,167 @@ function handleContractsStatistics(table_info, result) {
 	return table_info;
 }
 
+function handleCarManufacturersStatistics(table_info, result) {
+	table_info['carmanufacturers'] = {};
+
+	var businessid = [];
+	var name = [];
+	var streetaddress = [];
+	var city = [];
+	var province = [];
+
+	for (var row in result.rows) {
+		businessid.push(result.rows[row]['businessid']);
+	}
+	table_info['carmanufacturers']['businessid'] = businessid;
+
+	for (var row in result.rows) {
+		name.push(result.rows[row]['name']);
+	}
+	table_info['carmanufacturers']['name'] = name;
+
+	for (var row in result.rows) {
+		streetaddress.push(result.rows[row]['streetaddress']);
+	}
+	table_info['carmanufacturers']['streetaddress'] = streetaddress;
+
+	for (var row in result.rows) {
+		city.push(result.rows[row]['city']);
+	}
+	table_info['carmanufacturers']['city'] = city;
+
+	for (var row in result.rows) {
+		province.push(result.rows[row]['province']);
+	}
+	table_info['carmanufacturers']['province'] = province;
+
+	return table_info;
+}
+
+function handleCustomersStatistics(table_info, result) {
+	table_info['customers'] = {};
+
+	var driverslicense = [];
+	var name = [];
+	var phonenumber = [];
+	var email = [];
+	var streetaddress = [];
+	var city = [];
+	var province = [];
+	var governmentalid = [];
+
+	for (var row in result.rows) {
+		driverslicense.push(result.rows[row]['driverslicense']);
+	}
+	table_info['customers']['driverslicense'] = driverslicense;
+
+	for (var row in result.rows) {
+		name.push(result.rows[row]['name']);
+	}
+	table_info['customers']['name'] = name;
+
+	for (var row in result.rows) {
+		phonenumber.push(result.rows[row]['phonenumber']);
+	}
+	table_info['customers']['phonenumber'] = phonenumber;
+
+	for (var row in result.rows) {
+		email.push(result.rows[row]['email']);
+	}
+	table_info['customers']['email'] = email;
+
+	for (var row in result.rows) {
+		streetaddress.push(result.rows[row]['streetaddress']);
+	}
+	table_info['customers']['streetaddress'] = streetaddress;
+
+	for (var row in result.rows) {
+		city.push(result.rows[row]['city']);
+	}
+	table_info['customers']['city'] = city;
+
+	for (var row in result.rows) {
+		province.push(result.rows[row]['province']);
+	}
+	table_info['customers']['province'] = province;
+
+	for (var row in result.rows) {
+		governmentalid.push(result.rows[row]['governmentalid']);
+	}
+	table_info['customers']['governmentalid'] = governmentalid;
+
+	return table_info;
+}
+
+function handleTransactionsStatistics(table_info, result) {
+	table_info['transactions'] = {};
+
+	var transactionid = [];
+	var paymenttype = [];
+	var time = [];
+	var accountid = [];
+	var amount = [];
+	var contractid = [];
+
+	for (var row in result.rows) {
+		transactionid.push(result.rows[row]['transactionid']);
+	}
+	table_info['transactions']['transactionid'] = transactionid;
+
+	for (var row in result.rows) {
+		paymenttype.push(result.rows[row]['paymenttype']);
+	}
+	table_info['transactions']['paymenttype'] = paymenttype;
+
+	for (var row in result.rows) {
+		time.push(result.rows[row]['time']);
+	}
+	table_info['transactions']['time'] = time;
+
+	for (var row in result.rows) {
+		accountid.push(result.rows[row]['accountid']);
+	}
+	table_info['transactions']['accountid'] = accountid;
+
+	for (var row in result.rows) {
+		amount.push(result.rows[row]['amount']);
+	}
+	table_info['transactions']['amount'] = amount;
+
+	for (var row in result.rows) {
+		contractid.push(result.rows[row]['contractid']);
+	}
+	table_info['transactions']['contractid'] = contractid;
+
+	return table_info;
+}
+
+function handlePerformsStatistics(table_info, result) {
+	table_info['performs'] = {};
+
+	var vin = [];
+	var employeeid = [];
+	var maintenanceid = [];
+
+	for (var row in result.rows) {
+		vin.push(result.rows[row]['vin']);
+	}
+	table_info['performs']['vin'] = vin;
+
+	for (var row in result.rows) {
+		employeeid.push(result.rows[row]['employeeid']);
+	}
+	table_info['performs']['employeeid'] = employeeid;
+
+	for (var row in result.rows) {
+		maintenanceid.push(result.rows[row]['maintenanceid']);
+	}
+	table_info['performs']['maintenanceid'] = maintenanceid;
+
+	return table_info;
+}
+
+
 function getStatistics(relation, where, callback) {
 		var table_info = {}
     var sql_query = "SELECT * FROM " + relation + " " + where;
@@ -452,16 +623,24 @@ function getStatistics(relation, where, callback) {
         table_info = handleEmployeeStatistics(table_info, result);
       } else if (relation == 'branchoffice'){
         table_info = handleBranchOfficeStatistics(table_info, result);
+      } else if (relation == 'carmanufacturer'){
+        table_info = handleCarManufacturersStatistics(table_info, result);
       } else if ( relation == 'car' ) {
 				table_info = handleCarStatistics(table_info,result);
+      } else if ( relation == 'transaction' ) {
+				table_info = handleTransactionsStatistics(table_info,result);
 			} else if ( relation == "option") {
 				table_info = handleOptionStatistics(table_info, result);
+			} else if ( relation == "customer") {
+				table_info = handleCustomersStatistics(table_info, result);
 			} else if ( relation == "mechanics" ) {
 				table_info = handleMechanicStatistics(table_info, result);
 			} else if ( relation == "maintenances" ) {
 				table_info = handleMaintenancesStatistics(table_info, result);
 			} else if ( relation == "contract" ) {
 				table_info = handleContractsStatistics(table_info, result);
+			} else if ( relation == "performs" ) {
+				table_info = handlePerformsStatistics(table_info, result);
 			}
 
 			return callback(table_info);

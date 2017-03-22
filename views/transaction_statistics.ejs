@@ -1,0 +1,21 @@
+<table border="1">
+<tr>
+<th>transactionid</th>
+<th>paymenttype</th>
+<th>time</th>
+<th>accountid</th>
+<th>amount</th>
+<th>contractid</th>
+</tr>
+<% table_info.transactions.transactionid.forEach(function(val,i) { %>
+<tr>
+<td><%= table_info['transactions'].transactionid[i] %></td>
+<td><%= table_info['transactions'].paymenttype[i] %></td>
+<td><%= table_info['transactions'].time[i] %></td>
+<td><%= table_info['transactions'].accountid[i] %></td>
+<td><%= table_info['transactions'].amount[i] %></td>
+<td><%= table_info['transactions'].contractid[i] %></td>
+</tr>
+<% }) %>
+</table>
+
